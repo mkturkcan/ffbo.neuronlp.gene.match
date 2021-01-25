@@ -1,0 +1,50 @@
+{
+  "loadline": {
+    "script": [
+      ["notify", {"message": "To load a line, you can make a specific query starting with 'load line X', where X is the name of the line."}],
+      ["search", {"query": "load line R15F02"}],
+      ["notify", {"message": "Done! Try it yourself!", "pause": 0}]
+    ],
+    "neuron3d": false,
+    "keyword": "Gene Features",
+    "description": "Load a FlyLight line with NLP",
+    "category": "NeuroNLP Gene Features"
+  },
+  "searchline": {
+    "script": [
+      ["notify", {"message": "To search all available lines, try to click the cube-like icon to the top right of the screen."}],
+      ["click", {"uiBtn": {"type": "openGene"}}],
+      ["notify", {"message": "Done! Explore the menu to the left to load lines or search for a particular line!"}]
+    ],
+    "neuron3d": false,
+    "keyword": "Gene Features",
+    "description": "Search available FlyLight lines",
+    "category": "NeuroNLP Gene Features"
+  },
+  "findlines": {
+    "script": [
+      ["notify", {"message": "To find a line that expresses the sum of neurons in your workspace, click the wand icon to the top right."}],
+      ["search", {"query": "show neurons in ellipsoid body"}],
+      ["click", {"uiBtn": {"type": "getCompositeMatch"}}],
+      ["notify", {"message": "Done! Explore the menu to the left to search for matching lines!"}]
+    ],
+    "neuron3d": false,
+    "keyword": "Gene Features",
+    "description": "Find matching FlyLight lines for a query",
+    "category": "NeuroNLP Gene Features"
+  },
+  "geneselect": {
+    "keyword": "Gene Features",
+    "script": [
+      ["notify", {"message": "Hi!"}],
+      ["notify", {"message": "Let's first bring up neurons in the Ellipsoid Body!"}],
+      ["search", {"query": "Show Neurons in the Ellipsoid Body"}],
+      ["notify", {"message": "Let's move the cursor over a neuron, and click on it!"}],
+      ["click", {"label": "VGlut-F-200478"}],
+      ["notify", {"message": "The information of the selected neuron has been loaded from the FlyCircuit Database, which includes the lines whose expression overlaps most with the neuron's skeleton!"}],
+      ["notify", {"message": "Try it yourself!", "pause": 0}]
+    ],
+    "description": "Click on a neuron to show related lines",
+    "category": "NeuroNLP Gene Features"
+  }
+}

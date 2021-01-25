@@ -1,0 +1,23 @@
+{
+    "1": {
+      "keyword": "Match a single neuron",
+      "script": [["notify", {"message": "Let us start by adding some neurons to our workspace."}],
+                 ["search", {"query": "show $ExR1$"}],
+                 ["notify", {"message": "Now let us click on it."}],
+                 ["click", {"label": "ExR1(ring)_R_2"}],
+                 ["notify", {"message": "We can now see the associated lines on the left panel."}]],
+      "description": "Retrieve a match for a single neuron.",
+      "category": "Gene"
+    },
+    "2": {
+      "keyword": "Match a group of neurons",
+      "script": [["notify", {"message": "Let us start by adding some neurons to our workspace."}],
+                 ["search", {"query": "show $VP3$"}],
+                 ["notify", {"message": "Now let us press the line match button, and the matches will be visible in the information panel."}],
+                 ["click", {"uiBtn": {"type": "lineMatch"}}],
+                 ["notify", {"message": "This search can take a while! You can use it on any group of neurons, but the query might take a long time for neuron groups larger than 50."}]],
+      "description": "Retrieve a match for a group of neurons.",
+      "category": "Gene"
+    }
+
+  }

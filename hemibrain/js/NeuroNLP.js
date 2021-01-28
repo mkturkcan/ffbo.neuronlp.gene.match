@@ -168,7 +168,7 @@ require([
     }
 
 
-    client.startConnection("guest", "", "wss://hemibrain.neuronlp.fruitflybrain.org/ws");
+    client.startConnection("guest", "", "wss://hemibrain12.neuronlp.fruitflybrain.org/ws");
 
     function dataCallback(data) {
       var morph_data = {};
@@ -319,6 +319,9 @@ require([
       if (!'commands' in message)
         return;
       if ('reset' in message['commands']) {
+        // console.log('received a reset command.');
+        // console.log(message);
+        // console.log(message['commands']);
         ffbomesh.reset();
         delete message.commands.reset;
       }
@@ -457,17 +460,25 @@ require([
           $("#search-wrapper").block({ message: null });
           srchInput.blur();
         }
-        queryID = client.executeNLPquery(query, { success: dataCallback });
-        client.status.on("change", function (e) {
-          $("#search-wrapper").unblock();
-          if (!isOnMobile)
-            srchInput.focus();
-          srchInput.value = "";
-          if (e.value == -1)
-            reject();
-          else
-            resolve();
-        }, queryID);
+        if (query.includes('load tag')) {
+          tagName = query.split('load tag ')[1];
+          console.log(tagName);
+          queryID = client.retrieveTag(tagName, { success: retrieveTagCallback });
+          client.status.on("change", function (e) {$("#search-wrapper").unblock(); srchInput.value = ""; if (e.value == -1) { $('#ui-blocker').hide();} }, queryID);
+        }
+        else {
+          queryID = client.executeNLPquery(query, { success: dataCallback });
+          client.status.on("change", function (e) {
+            $("#search-wrapper").unblock();
+            if (!isOnMobile)
+              srchInput.focus();
+            srchInput.value = "";
+            if (e.value == -1)
+              reject();
+            else
+              resolve();
+          }, queryID);
+        }
       });
     }
 
@@ -679,26 +690,42 @@ window.getMatches = function () {
 
 // result_dict = { 'summary': { 'class': 'Line', 'uname': 'Aggregation' } };
 
-window.lineSummary = function(bridge_id) {
+window.lineSummary = function(bridge_ids) {
+  let bridge_id = bridge_ids.split(':_:')[0];
+  window.pathToImage = bridge_ids.split(':_:')[1];
   result_dict = { 'summary': { 'class': 'Line', 'uname': '', 'data_source': {'NeuronBridge': '2.1.0'} }, 'connectivity': {'post': {}, 'pre': {} } };
 $.getJSON('https://ffbodata.neuronlp.fruitflybrain.org/bridge/cdsresults/' + bridge_id + ".json", function (json) {
-          matches = json;
-		  console.log(matches);
+      matches = json;
+		  // console.log(matches);
 			match_dict = [];
 		  for (i=0;i<50;i++) {
         var dat = matches['results'][i];
         match_dict.push({'uname': dat['publishedName'], 'name': dat['publishedName'], 'referenceId': dat['publishedName'], 'number': dat['normalizedScore'], 'has_morph': 1, 'n_rid': dat['publishedName']});
-        }
-        result_dict['connectivity']['post']['details'] = match_dict;
-        result_dict['summary']['name'] = matches['maskLibraryName'];
-        result_dict['summary']['uname'] = matches['maskPublishedName'];
-        infoPanel.update(result_dict);
-        $( "h4:contains('Associated Lines (NeuronBridge 2.1.0)')").html("Associated Neurons (NeuronBridge 2.1.0)");
-        $( ".info-input-span:contains('N greater than')").html("Score greater than");
-        $( ".info-input-span:contains('Filter by name')").html("Filter by ReferenceId");
-        $( "th:contains('Number of Synapses')").html("Match Score");
-        $( "h4:contains('Presynaptic Partners')").remove();
-        $( "#associated_lines").remove();
-        $("h4:contains('Postsynaptic Partners')").remove();
-      });
+      }
+      result_dict['connectivity']['post']['details'] = match_dict;
+      result_dict['summary']['name'] = matches['maskLibraryName'];
+      result_dict['summary']['uname'] = matches['maskPublishedName'];
+      // console.log('result dict:', result_dict)
+      infoPanel.update(result_dict);
+      let bridge_link = 'https://ffbodata.neuronlp.fruitflybrain.org/bridge/by_line/' + bridge_id + ".json";
+      // console.log(bridge_link);
+      /*
+      $.getJSON(bridge_link, function (json) {
+        console.log(json);
+        let pathToImage = 'https://ffbodata.neuronlp.fruitflybrain.org/bridge/'+json['imageURL'];
+        $( '<img class="clickable-image" alt="not available" tryCtr=0 maxTry=5 src="${pathToImage}"> </img>' ).insertBefore( $( "h4:contains('Associated Lines (NeuronBridge 2.1.0)')") );
+      
+      });*/
+      let pathToImageLink = 'https://ffbodata.neuronlp.fruitflybrain.org/bridge/'+window.pathToImage;
+      // console.log(pathToImageLink);
+      $( '<h4>Image</h4><div><img class="clickable-image" alt="not available" tryCtr=0 maxTry=5 src="' + pathToImageLink + '" style="width: 100%;"> </img></div>' ).insertBefore( $( "h4:contains('Associated Lines (NeuronBridge 2.1.0)')") );
+    
+      $( "h4:contains('Associated Lines (NeuronBridge 2.1.0)')").html("Associated Neurons (NeuronBridge 2.1.0)");
+      $( ".info-input-span:contains('N greater than')").html("Score greater than");
+      $( ".info-input-span:contains('Filter by name')").html("Filter by ReferenceId");
+      $( "th:contains('Number of Synapses')").html("Match Score");
+      $( "h4:contains('Presynaptic Partners')").remove();
+      $( "#associated_lines").remove();
+      $("h4:contains('Postsynaptic Partners')").remove();
+    });
 }

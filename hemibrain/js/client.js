@@ -497,8 +497,10 @@ moduleExporter("FFBOClient", ["autobahn", "propertymanager"], function (autobahn
   FFBOClient.prototype.retrieveTag = function (tag_name, callbacks, format) {
     return this.executeNAquery({
       tag: tag_name,
-      uri: 'ffbo.na.retrieve_tag'
-    }, callbacks, format);
+      uri: 'ffbo.na.retrieve_tag',
+      verb: 'add',
+      format: 'notmorphology'
+    }, callbacks, 'notmorphology');
   }
 
   FFBOClient.prototype.getInfo = function (rid, callbacks, format) {
@@ -543,6 +545,7 @@ moduleExporter("FFBOClient", ["autobahn", "propertymanager"], function (autobahn
      * Query to keep a list of Objs based on their Rids. rids must be an array
      */
     return this.executeNAquery({
+      verb: "add",
       command: {
         retrieve: {
           state: 0

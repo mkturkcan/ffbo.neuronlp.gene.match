@@ -190,7 +190,7 @@ moduleExporter("ConnTable",
       let a_el = document.createElement('a');
       a_el.innerHTML = name;
       // a_el.id = d['publishedName'];
-      var _referenceid = d['id'];
+      var _referenceid = d['id']+':_:'+d['imageURL'];
       $(a_el).click(function() {
         lineSummary(_referenceid);
       })
@@ -207,7 +207,8 @@ moduleExporter("ConnTable",
         btn.className = 'btn';
         btn.id = 'line_add-' + d['publishedName']+"_"+d['id'];
         btn.name = d['publishedName'];
-        btn.rid = d['id']
+        btn.rid = d['id'];
+        btn.imageURL = d['imageURL']
 
         btn.innerText = '?';
         btn.className += ' btn-add btn-info';

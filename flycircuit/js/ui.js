@@ -30,6 +30,8 @@ moduleExporter("NeuroNLPUI", ["jquery", "overlay", "jquery.mmenu"], function($, 
 
     this.GUIinfoOverlay = new Overlay("gui-3d", "");
     this.overviewPanel = new Overlay("overview-panel", "");
+    this.pdfPanel = new Overlay("pdf-panel", "");
+    this.referencePanel = new Overlay("quick-reference-panel", "");
     this.announcePanel = new Overlay("announce-panel", "");
     this.neuronlpSwitch = new Overlay("neuronlp-switch", "");
     this.demoTable = new Overlay("demo-panel", `
@@ -43,6 +45,7 @@ moduleExporter("NeuroNLPUI", ["jquery", "overlay", "jquery.mmenu"], function($, 
       this.demoTable.show()
     }
     this.onShowNeuroNLP = () => {
+      
       mm_menu_right.close();
       this.neuronlpSwitch.show();
     }
@@ -61,6 +64,19 @@ moduleExporter("NeuroNLPUI", ["jquery", "overlay", "jquery.mmenu"], function($, 
     this.onShowOverview = () => {
       mm_menu_right.close();
       this.overviewPanel.show();
+    }
+    this.onShowReference = () => {
+      mm_menu_right.close();
+      this.referencePanel.show();
+    }
+    this.onShowPDF = () => {
+      function openInNewTab(url) {
+        var win = window.open(url, '_blank');
+        win.focus();
+      }
+      openInNewTab('https://dev.fruitflybrain.org/#/posts/gene_match_introduction');
+      mm_menu_right.close();
+      // this.pdfPanel.show();
     }
     this.onShowAnnounce = () => {
       mm_menu_right.close();

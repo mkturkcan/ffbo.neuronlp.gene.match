@@ -339,11 +339,7 @@ require([
     };
 
     infoPanel.addByRid = (rid) => {
-      if (rid.includes('#')) {
-        queryID = client.addByRid(rid, { success: dataCallback });
-      } else {
-        queryID = client.executeNLPquery('add $' + rid + '$', { success: dataCallback });
-      }
+      queryID = client.addByRid(rid, {success: dataCallback});
     };
 
     infoPanel.addNeuronByUname = (uname) => {

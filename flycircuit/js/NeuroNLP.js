@@ -366,6 +366,7 @@ require([
           $('#info-gene').innerHTML = "";
           $('#info-panel').show();
           infoPanel.update(data);
+          infoPanel.show();
           console.log(data);
           name = data.summary.name;
           a = findSkeletonIndex(name);
@@ -560,7 +561,7 @@ require([
     ffbomesh.createUIBtn("removeUnpin", "fa-trash", "Remove Unpinned Neurons")
     ffbomesh.createUIBtn("downData", "fa-download", "Download Connectivity")
     ffbomesh.createUIBtn("openGene", "fa-cube", "Genetic Viewer")
-    ffbomesh.createUIBtn("getCompositeMatch", "fa-magic", "Retrieve Associated Genetic Lines")
+    ffbomesh.createUIBtn("getCompositeMatch", "fa-magic", "Get Matches for Workspace")
 
     ffbomesh.on('showSettings', (function () { window.NeuroNLPUI.onClickVisualizationSettings() }));
     ffbomesh.on('resetView', (function () { ffbomesh.resetView() }));
@@ -1009,6 +1010,7 @@ require([
             window.line = out;
           });
           window.createGeneInfo("R" + rowData.slice(10, 15));
+          $('#info-gene').show();
         });
         row.appendChild(cell);
         tableBody.appendChild(row);
@@ -1016,6 +1018,7 @@ require([
         var cell = document.createElement('td');
         cell.innerHTML = "<a href='#" + "'>Load</a>";
         cell.addEventListener("click", function () {
+          window.NeuroNLPUI.onHideAllNeuropil();
           try { disposeStack(window.line); } catch{ };
           var stackFolder;
           if (ffbomesh.stats.getFPS() < 45)
@@ -1091,6 +1094,11 @@ require([
       return window.dataFile.lineNames.findIndex(function (el) { return ("R" + el[0].slice(10, 15)) == x; });
     }
     window.getArrayColumn = (arr, n) => arr.map(x => x[n]);
+
+    window.loadExampleLine = function() {
+      window.NeuroNLPUI.closeAllOverlay();
+      window.NLPsearch("load line R15F02");
+    }
 
     window.populateBehaviorData = function (dom, name) {
       var idx = window.behaviorFile.lineNames.findIndex(function (el) { return el == name; });

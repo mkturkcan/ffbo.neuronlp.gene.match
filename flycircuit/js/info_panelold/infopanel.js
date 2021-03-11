@@ -120,68 +120,13 @@ moduleExporter("InfoPanel",[
   };
 
   /**
-   * Add an object into the workspace.
-   *
-   * @param {string} rid -  uname of target object (neuron/synapse)
-   */
-  InfoPanel.prototype.addByRid = function(rid){
-    return;
-  };
-
-  /**
-   * Add a neuron into the workspace.
-   *
-   * @param {string} uname -  uname of target object (neuron/synapse)
-   */
-  InfoPanel.prototype.addNeuronByUname = function(uname){
-    return;
-  };
-
-  /**
-   * Add a synapse into the workspace.
-   *
-   * @param {string} uname -  uname of target object (neuron/synapse)
-   */
-  InfoPanel.prototype.addSynapseByUname = function(uname){
-    return;
-  };
-
-  /**
    * Remove an object into the workspace.
    *
    * @param {string} uname -  uname of target object (neuron/synapse)
    */
-  InfoPanel.prototype.removeByRid = function(rid){
+  InfoPanel.prototype.removeByUname = function(uname){
     return;
   };
-
-  /**
-   * Add an object into the workspace.
-   *
-   * @param {string} rid -  uname of target object (neuron/synapse)
-   */
-  InfoPanel.prototype.addByRid = function(rid){
-    return;
-  };
-
-  /**
-   * Remove a neuron into the workspace.
-   *
-   * @param {string} uname -  uname of target object (neuron/synapse)
-   */
-  InfoPanel.prototype.removeNeuronByUname = function(uname){
-    return;
-  };
-
-  /**
-   * Remove a synapse into the workspace.
-   *
-   * @param {string} uname -  uname of target object (neuron/synapse)
-   */
-  InfoPanel.prototype.removeSynapseByUname = function(uname){
-    return;
-  };
-
 
   /**
    * Get attribute of an object in the workspace.
@@ -237,18 +182,10 @@ moduleExporter("InfoPanel",[
       this.name = new_name;
 
       if ('connectivity' in data){ // synapse data does not have connectivity
-        if (data['summary']['class'] == 'Neuron') {
-            this.connSVG.update(data['connectivity']);
-            this.connTable.update(data['connectivity']);
-            this.summaryTable.update(data['summary']);
-            this.show();
-        }else{
-            this.connSVG.hide();
-            this.connTable.update(data['connectivity']);
-            this.summaryTable.update(data['summary']);
-            this.connTable.show();
-            this.summaryTable.show(); //show all
-        }
+        this.connSVG.update(data['connectivity']);
+        this.connTable.update(data['connectivity']);
+        this.summaryTable.update(data['summary']);
+        this.show(); //show all
       }else{
         this.connSVG.hide();
         this.connTable.hide();

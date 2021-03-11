@@ -24,7 +24,7 @@
   "findlines": {
     "script": [
       ["notify", {"message": "To find a line that expresses the sum of neurons in your workspace, click the wand icon to the top right."}],
-      ["search", {"query": "show neurons in ellipsoid body"}],
+      ["search", {"query": "show neurons with axons in eb and dendrites in eb"}],
       ["click", {"uiBtn": {"type": "getCompositeMatch"}}],
       ["notify", {"message": "Done! Explore the menu to the left to search for matching lines!"}]
     ],
@@ -38,7 +38,7 @@
     "script": [
       ["notify", {"message": "Hi!"}],
       ["notify", {"message": "Let's first bring up neurons in the Ellipsoid Body!"}],
-      ["search", {"query": "Show Neurons in the Ellipsoid Body"}],
+      ["search", {"query": "show neurons with axons in eb and dendrites in eb"}],
       ["notify", {"message": "Let's move the cursor over a neuron, and click on it!"}],
       ["click", {"label": "VGlut-F-200478"}],
       ["notify", {"message": "The information of the selected neuron has been loaded from the FlyCircuit Database, which includes the lines whose expression overlaps most with the neuron's skeleton!"}],

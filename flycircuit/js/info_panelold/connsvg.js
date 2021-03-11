@@ -12,38 +12,6 @@ if( moduleExporter === undefined){
   };
 }
 
-
-function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
-
-function hsvToRgb(h, s, v) {
-  var r, g, b;
-
-  var i = Math.floor(h * 6);
-  var f = h * 6 - i;
-  var p = v * (1 - s);
-  var q = v * (1 - f * s);
-  var t = v * (1 - (1 - f) * s);
-
-  switch (i % 6) {
-    case 0: r = v, g = t, b = p; break;
-    case 1: r = q, g = v, b = p; break;
-    case 2: r = p, g = v, b = t; break;
-    case 3: r = p, g = q, b = v; break;
-    case 4: r = t, g = p, b = v; break;
-    case 5: r = v, g = p, b = q; break;
-  }
-  
-  return '#'+("0" + Math.round(r * 255).toString(16)).slice(-2) + ("0" + Math.round(g * 255).toString(16)).slice(-2) + ("0" + Math.round(b * 255).toString(16)).slice(-2);
-}
-
-
 moduleExporter("ConnSVG",
  ['jquery',
   'd3',
@@ -96,7 +64,7 @@ moduleExporter("ConnSVG",
    */
   function createTemplate(obj){
     var template = "";
-    let tableText = '<div><p>Synaptic Profile</p><p id="' + obj.tabTextId + '" class="syn-reference">Click on/Hover over plot to extract detailed synaptic information</p></div>';
+    let tableText = '<div><h4>Synaptic Profile</h4></div><div><p id="' + obj.tabTextId + '" class="syn-reference">Click on/Hover over plot to extract detailed synaptic information</p></div>';
     template = "";
     template += '<div id="' + obj.tabId + '">' + tableText +'</div>';
     template += '<div id="' + obj.svgId + '"></div>';
@@ -238,8 +206,7 @@ moduleExporter("ConnSVG",
               y: height/8 + margin.top,
               x: x(1-(d.x+d.x0)/100) + margin.left,
               width: x(d.x/100),
-              height: height/8*2.5,
-              fill: hsvToRgb(49, Math.random(), 0.93)
+              height: height/8*2.5
             });
             var tooltip_info = d.neuron+": "+ (d.x).toFixed(1) +"%("+Math.round(pre_num*d.x/100).toString() +")";
             d3.select(this).append("title").text(tooltip_info);
@@ -249,14 +216,12 @@ moduleExporter("ConnSVG",
         .data(data_post)
         .enter().append("rect")
           .each(function(d){
-
             d3.select(this).attr({
               class: d.neuron.replace(/ /g,"_"),
               y: height/8*5 + margin.top,
               x: x(1 - (d.x+d.x0)/100) + margin.left,
               width: x(d.x/100),
-              height: height/8*2.5,
-              fill: hsvToRgb(49, Math.random(), 0.93)
+              height: height/8*2.5
             });
             var tooltip_info = d.neuron+": "+ (d.x).toFixed(1) +"%("+Math.round(post_num*d.x/100).toString() +")";
             d3.select(this).append("title").text(tooltip_info);

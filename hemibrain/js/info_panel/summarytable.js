@@ -216,16 +216,10 @@ moduleExporter("SummaryTable",
       if (key === 'referenceId'){
             fieldName = 'Hemibrain BodyID';
             $.getJSON('https://ffbodata.neuronlp.fruitflybrain.org/bridge/by_body/' + fieldValue + ".json", function(json) {
-              // console.log(json);
               var bridge_id = json['results'][0]['id'];
-              // console.log(bridge_id);
               $.getJSON('https://ffbodata.neuronlp.fruitflybrain.org/bridge/cdsresults/' + bridge_id + ".json", function(json) {
                 matches = json;
-                // console.log(matches);
                 connTable.updateLines(matches);
-                /*for (i in matches['results']) {
-                  console.log(matches['results'][i]);
-                }*/
               });
           });
       }

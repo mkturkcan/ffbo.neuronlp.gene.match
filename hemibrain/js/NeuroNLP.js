@@ -22,7 +22,7 @@ requirejs.config({
     dynamicmenu: '//cdn.jsdelivr.net/gh/fruitflybrain/ffbo.neuronlp@hemibrain/js/dynamicmenu',
     tags: '//cdn.jsdelivr.net/gh/fruitflybrain/ffbo.neuronlp@hemibrain/js/tags',
     propertymanager: '//cdn.jsdelivr.net/gh/fruitflybrain/ffbo.lib@hemibrain/js/propertymanager',
-    ui: '//cdn.jsdelivr.net/gh/fruitflybrain/ffbo.neuronlp@hemibrain/js/ui',
+    ui: 'ui',
     infopanel: 'info_panel/infopanel', //'//cdn.jsdelivr.net/gh/fruitflybrain/ffbo.neuronlp@flycircuit/js/info_panel/infopanel',                                
     connsvg: '//cdn.jsdelivr.net/gh/fruitflybrain/ffbo.neuronlp@hemibrain/js/info_panel/connsvg',
     conntable: 'info_panel/conntable',
@@ -319,9 +319,9 @@ require([
       if (!'commands' in message)
         return;
       if ('reset' in message['commands']) {
-        // console.log('received a reset command.');
-        // console.log(message);
-        // console.log(message['commands']);
+        console.log('received a reset command.');
+        console.log(message);
+        console.log(message['commands']);
         ffbomesh.reset();
         delete message.commands.reset;
       }
@@ -339,7 +339,20 @@ require([
     };
 
     infoPanel.addByRid = (rid) => {
-      queryID = client.addByRid(rid, {success: dataCallback});
+      if (rid.includes('#') || Array.isArray(rid)) {
+        if (typeof rid === 'string') {
+          queryID = client.addByRid(rid, { success: dataCallback });
+        }
+        else if (rid[0].includes('#')){
+          queryID = client.addByRid(rid, { success: dataCallback });
+        }
+        else if (Array.isArray(rid)) {
+          queryID = client.executeNLPquery('add /:referenceId:[' + rid.join(',') + ']', { success: dataCallback });
+        } 
+      }
+      else {
+        queryID = client.executeNLPquery('add $' + rid + '$', { success: dataCallback });
+      }
     };
 
     infoPanel.addNeuronByUname = (uname) => {
@@ -355,8 +368,16 @@ require([
     };
 
     infoPanel.removeByRid = (rid) => {
-      if (rid.includes('#')) {
-        queryID = client.removeByRid(rid);
+      if (rid.includes('#') || Array.isArray(rid)) {
+        if (typeof rid === 'string') {
+          queryID = client.removeByRid(rid, { success: dataCallback });
+        }
+        else if (rid[0].includes('#')){
+          queryID = client.removeByRid(rid, { success: dataCallback });
+        }
+        else if (Array.isArray(rid)) {
+          queryID = client.executeNLPquery('remove /:referenceId:[' + rid.join(',') + ']', { success: dataCallback });
+        } 
       }
       else {
         queryID = client.executeNLPquery('remove $' + rid + '$', { success: dataCallback });
@@ -390,6 +411,7 @@ require([
       queryID = client.getInfo(e.value, {
         success: function (data) {
           data['summary']['rid'] = e.value;
+          console.log(data);
           infoPanel.update(data);
         }
       });
@@ -460,7 +482,39 @@ require([
           tagName = query.split('load tag ')[1];
           console.log(tagName);
           queryID = client.retrieveTag(tagName, { success: retrieveTagCallback });
-          client.status.on("change", function (e) {$("#search-wrapper").unblock(); srchInput.value = ""; if (e.value == -1) { $('#ui-blocker').hide();} }, queryID);
+          client.status.on("change", function (e) { $("#search-wrapper").unblock(); srchInput.value = ""; if (e.value == -1) { $('#ui-blocker').hide(); } }, queryID);
+        }
+        else if (query.indexOf('load line') > -1) {
+          ex = query.slice(10);
+          if (ex.includes(' ')) {
+            lname_i = ex.split(' ')[0];
+            lname_ii = ex.split(' ')[1];
+            console.log(lname_i, lname_ii);
+            $("#search-wrapper").unblock();
+            let bridge_link = 'https://ffbodata.neuronlp.fruitflybrain.org/bridge/by_line/' + lname_i + ".json";
+            try {
+              $.getJSON(bridge_link, function (json) {
+                bridge_match = json['results'];
+                for (i = 0; i < bridge_match.length; i++) {
+                  if (bridge_match[i]['id'] == lname_ii) {
+                    aa = bridge_match[i]["id"] + ':_:' + bridge_match[i]["imageURL"];
+                  }
+                }
+                window.lineSummary(aa);
+                srchInput.value = "";
+              });
+            }
+            catch (err) {
+              console.log(err);
+              iziToast.error({ message: 'Line not found.', timeout: 3000 });
+            }
+          }
+          else {
+            srchInput.value = "";
+            window.lineSearchSummary(ex);
+            $("#search-wrapper").unblock();
+          }
+          resolve();
         }
         else {
           queryID = client.executeNLPquery(query, { success: dataCallback });
@@ -686,42 +740,127 @@ window.getMatches = function () {
 
 // result_dict = { 'summary': { 'class': 'Line', 'uname': 'Aggregation' } };
 
-window.lineSummary = function(bridge_ids) {
+window.lineSummary = function (bridge_ids) {
   let bridge_id = bridge_ids.split(':_:')[0];
   window.pathToImage = bridge_ids.split(':_:')[1];
-  result_dict = { 'summary': { 'class': 'Line', 'uname': '', 'data_source': {'NeuronBridge': '2.1.0'} }, 'connectivity': {'post': {}, 'pre': {} } };
-$.getJSON('https://ffbodata.neuronlp.fruitflybrain.org/bridge/cdsresults/' + bridge_id + ".json", function (json) {
-      matches = json;
-		  // console.log(matches);
-			match_dict = [];
-		  for (i=0;i<50;i++) {
-        var dat = matches['results'][i];
-        match_dict.push({'uname': dat['publishedName'], 'name': dat['publishedName'], 'referenceId': dat['publishedName'], 'number': dat['normalizedScore'], 'has_morph': 1, 'n_rid': dat['publishedName']});
-      }
-      result_dict['connectivity']['post']['details'] = match_dict;
-      result_dict['summary']['name'] = matches['maskLibraryName'];
-      result_dict['summary']['uname'] = matches['maskPublishedName'];
-      // console.log('result dict:', result_dict)
-      infoPanel.update(result_dict);
-      let bridge_link = 'https://ffbodata.neuronlp.fruitflybrain.org/bridge/by_line/' + bridge_id + ".json";
-      // console.log(bridge_link);
-      /*
-      $.getJSON(bridge_link, function (json) {
-        console.log(json);
-        let pathToImage = 'https://ffbodata.neuronlp.fruitflybrain.org/bridge/'+json['imageURL'];
-        $( '<img class="clickable-image" alt="not available" tryCtr=0 maxTry=5 src="${pathToImage}"> </img>' ).insertBefore( $( "h4:contains('Associated Lines (NeuronBridge 2.1.0)')") );
-      
-      });*/
-      let pathToImageLink = 'https://ffbodata.neuronlp.fruitflybrain.org/bridge/'+window.pathToImage;
-      // console.log(pathToImageLink);
-      $( '<h4>Image</h4><div><img class="clickable-image" alt="not available" tryCtr=0 maxTry=5 src="' + pathToImageLink + '" style="width: 100%;"> </img></div>' ).insertBefore( $( "h4:contains('Associated Lines (NeuronBridge 2.1.0)')") );
+  result_dict = { 'summary': { 'class': 'Line', 'uname': '', 'data_source': { 'NeuronBridge': '2.1.0' } }, 'connectivity': { 'post': {}, 'pre': {} } };
+  $.getJSON('https://ffbodata.neuronlp.fruitflybrain.org/bridge/cdsresults/' + bridge_id + ".json", function (json) {
+    matches = json;
+    // console.log(matches);
+    match_dict = [];
+    for (i = 0; i < 50; i++) {
+      var dat = matches['results'][i];
+      match_dict.push({ 'uname': dat['publishedName'], 'name': dat['publishedName'], 'referenceId': dat['publishedName'], 'number': dat['normalizedScore'], 'has_morph': 1, 'n_rid': dat['publishedName'] });
+    }
+    match_dict.reverse();
+    result_dict['connectivity']['post']['details'] = match_dict;
+    result_dict['summary']['name'] = matches['maskLibraryName'];
+    result_dict['summary']['uname'] = matches['maskPublishedName'];
+    // console.log('result dict:', result_dict)
+    infoPanel.update(result_dict);
+    let bridge_link = 'https://ffbodata.neuronlp.fruitflybrain.org/bridge/by_line/' + bridge_id + ".json";
+    // console.log(bridge_link);
+    /*
+    $.getJSON(bridge_link, function (json) {
+      console.log(json);
+      let pathToImage = 'https://ffbodata.neuronlp.fruitflybrain.org/bridge/'+json['imageURL'];
+      $( '<img class="clickable-image" alt="not available" tryCtr=0 maxTry=5 src="${pathToImage}"> </img>' ).insertBefore( $( "h4:contains('Associated Lines (NeuronBridge 2.1.0)')") );
     
-      $( "h4:contains('Associated Lines (NeuronBridge 2.1.0)')").html("Associated Neurons (NeuronBridge 2.1.0)");
-      $( ".info-input-span:contains('N greater than')").html("Score greater than");
-      $( ".info-input-span:contains('Filter by name')").html("Filter by ReferenceId");
-      $( "th:contains('Number of Synapses')").html("Match Score");
-      $( "h4:contains('Presynaptic Partners')").remove();
-      $( "#associated_lines").remove();
+    });*/
+    let pathToImageLink = 'https://ffbodata.neuronlp.fruitflybrain.org/bridge/' + window.pathToImage;
+    // console.log(pathToImageLink);
+    $('<h4>Image</h4><div><img class="clickable-image" alt="not available" tryCtr=0 maxTry=5 src="' + pathToImageLink + '" style="width: 100%;"> </img></div>').insertBefore($("h4:contains('Associated Lines (NeuronBridge 2.1.0)')"));
+
+    $("h4:contains('Associated Lines (NeuronBridge 2.1.0)')").html("Associated Neurons (NeuronBridge 2.1.0)");
+    $(".info-input-span:contains('N greater than')").html("Score greater than");
+    $(".info-input-span:contains('Filter by name')").html("Filter by ReferenceId");
+    $("th:contains('Number of Synapses')").html("Match Score");
+    $("h4:contains('Presynaptic Partners')").remove();
+    $("#associated_lines").remove();
+    $("h4:contains('Postsynaptic Partners')").remove();
+  });
+}
+
+window.lineSearchSummary = function (name) {
+  try {
+    $.getJSON('https://ffbodata.neuronlp.fruitflybrain.org/bridge/by_line/' + name + '.json', function (json) {
+      matches = json;
+
+      console.log(matches);
+      for (x in matches['results']) {
+        d = matches['results'][x];
+        matches['results'][x]['normalizedScore'] = "";
+      }
+        
+      window.infoPanel.update(window.defaultStruct);
+
+      $("#info-intro").hide();
+      window.infoPanel.show();
+      window.infoPanel.summaryTable.hide();
+      window.infoPanel.connSVG.hide();
+      window.infoPanel.connTable.updateLines(matches);
+      $('.filtered-N').show();
+      $("h4:contains('Associated Lines')").html("Found Lines");
+      $("h4:contains('Presynaptic Partners')").remove();
       $("h4:contains('Postsynaptic Partners')").remove();
+      $("p:contains('Synaptic Profile')").remove();
+      $("#info-panel-conn-table-text").remove();
+      $("th:contains('Matching Score')").html("");
+      $("#line-N").remove();
+      $("span:contains('Score greater than')").html("");
+      $(".info-input-span").remove();
+      $("#info-panel-table-pre").hide();
+      $("#info-panel-table-post").hide();
+      
     });
+  }
+  catch (err) {
+    console.log(err);
+    iziToast.error({ message: 'Line not found.', timeout: 3000 });
+  }
+
+
+
+
+};
+
+
+window.defaultStruct = {
+  "summary": {
+    "uname": "",
+    "name": "",
+    "referenceId": "",
+    "class": "Neuron",
+    "data_source": {
+      "Hemibrain": "1.2"
+    },
+    "orid": "#000:000",
+    "info": null,
+    "arborization_data": {
+      "input_synapses": {
+      },
+      "output_synapses": {
+      }
+    },
+    "rid": "#000:000"
+  },
+  "connectivity": {
+    "post": {
+      "details": [
+      ],
+      "summary": {
+        "number": 1,
+        "profile": {
+        }
+      }
+    },
+    "pre": {
+      "details": [],
+      "summary": {
+        "number": 1,
+        "profile": {
+        }
+      }
+    }
+  }
 }

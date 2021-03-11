@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>NeuroNLP.Hemibrain</title>
+    <title>NeuroNLP.Hemibrain Gene Match</title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
@@ -53,7 +53,7 @@
               <a href="http://fruitflybrain.org" target="_blank"><img src="/img/ffbo_logo.png" role="button"></a>
               <span style="font-family:var(--title-font-family); font-size: 20px; color:var(--navbar-text-color);">NeuroNLP</span>
               <a onclick="NeuroNLPUI.onShowNeuroNLP()">
-                <span>.Gene Hemibrain</span>
+                <span>.Hemibrain Gene Match</span>
               </a>
             </div>
             <button id="ui_menu_btn" type="button" class="navbar-toggle collapsed" onclick="NeuroNLPUI.openRightMenu()" style="z-index:1">
@@ -91,6 +91,7 @@
                 <span>Get Started</span>
                 <ul id="toggle_get_started">
                   <li id="btn-overview"><a style="width:100%" onclick="NeuroNLPUI.onShowOverview()">Overview</a></li>
+                  <li id="btn-overview"><a style="width:100%" onclick="NeuroNLPUI.onShowPDF()">Gene Match Tutorial</a></li>
                   <li id="btn-news"><a style="width:100%" style="width:100%" onclick="NeuroNLPUI.onShowAnnounce()">News</a></li>
                   <li><a style="width:100%" onclick="NeuroNLPUI.onShowDemo()">Demos</a></li>
                   <!-- <li><a onclick="NeuroNLPUI.onShowTutorialVideo()">Tutorial Video</a></li> -->
@@ -448,15 +449,41 @@
                    panel.
             </div> -->
             <div id="info-intro" class="ffbo-intro">
-              <h4>NeuroNLP.Gene Hemibrain</h4>
+              <h4>What is NeuroNLP?</h4>
               <p>
-                This version of NeuroNLP.Gene showcases data from the NeuronBridge website, allowing for searching matches for a single neuron or a group of neurons.
+                NeuroNLP provides a modern web-based portal for navigating fruit fly
+                brain circuit data. It enables in-depth exploration and investigation
+                of brain structure, using intuitive plain English queries, such as
+                <br><br><u style="font-style:italic">"show $APL$".</u></br></br>
+                NeuroNLP can be accessed from any browser supporting WebGL.
+              </p>
+              <h4>NeuroNLP.Hemibrain Gene Match</h4>
+              <p>
+                NeuroNLP.Hemibrain Gene Match showcases data from the NeuronBridge website, allowing for searching matches for a single neuron or a group of neurons.
               </p>
               <h4>Quick Demos</h4>
               <p>
                 Want to get started? Go check out some real-time "Demos" for NLP queries and GUI usage!
               </p>
               <a  onmouseover="NeuroNLPUI.mimicMouseOver('#btn-getting-started')" onmouseout="NeuroNLPUI.mimicMouseOut('#btn-getting-started')" onclick="NeuroNLPUI.onShowDemo()" class="info-try btn btn-xs"><i class="fa fa-angle-double-right" aria-hidden="true"></i> Try Demos!</a>
+              <br>
+              <h4>Quick Query Reference</h4>
+              <p>
+                  Check out the Quick Query Reference to be able to query data easily!
+              </p>
+              <a onmouseover="NeuroNLPUI.mimicMouseOver('#info_btn')" onmouseout="NeuroNLPUI.mimicMouseOut('#info_btn')" onclick="NeuroNLPUI.onShowReference()" class="info-try btn btn-xs"><i class="fa fa-angle-double-right" aria-hidden="true"></i> Open Query Reference!</a>
+              <br>
+              <h4>News</h4>
+              <p>
+                Updates and announcements for <u style="text-decoration:none; font-family:'Rajdhani',sans-serif; color:grey;">NeuroNLP.FlyCircuit</u>.
+              </p>
+              <a onmouseover="NeuroNLPUI.mimicMouseOver('#btn-getting-started')" onmouseout="NeuroNLPUI.mimicMouseOut('#btn-getting-started')" onclick="NeuroNLPUI.onShowAnnounce()" class="info-try btn btn-xs"><i class="fa fa-angle-double-right" aria-hidden="true"></i> See What's New!</a>
+              <br>
+              <h4>Tutorial Handout</h4>
+              <p>
+                You can learn about all features of the website by reading the tutorial below:
+              </p>
+              <a onclick="NeuroNLPUI.onShowPDF()" class="info-try btn btn-xs"><i class="fa fa-angle-double-right" aria-hidden="true"></i> Gene Match Tutorial</a>
               <br><br>
             </div>
             <div id ="info-panel" style="display: none">
@@ -607,13 +634,15 @@
                       By combining various attributes of query targets, you can create some very powerful queries.
                     </p>
                     <ul>Here are a list of example queries you can try:
-                      <li><span style="color: #88CDF5">show $MBON$</span> : search for any neuron whose name contains text "MBON".</li>
-                      <li><span style="color: #88CDF5">add /r(.*)DA1_(.*)_R_1/r</span> : add to the current workspace any neuron whose name matches the regular expression.</li>
-                      <li><span style="color: #88CDF5">show $5813014882$</span> : show a single neuron corresponding to the Hemibrain BodyID 5813014882.</li>
-                      <li><span style="color: #88CDF5">show /:referenceId:[5813014882, 912147912, 880875861]</span> : show all neurons with the listed Hemibrain BodyId.</li>
-                      <li><span style="color: #88CDF5">show neurons in right MB</span> : show all neurons that have arborizations in MB.</li>
-                      <li><span style="color: #88CDF5">add postsynaptic $PEG$ neurons with at least 10 synapses</span> : add all PEG neurons that are postsynaptic to the neurons in the current workspace and that have a connection with more than 10 synapses.</li>
-                      <li><span style="color: #88CDF5">show neurons that have dendrites in EB and axons in PB</span> : show neurons that have input site from EB and has output sites in PB</li>
+                      <li><span style="color: #88CDF5">load line LH989</span> : Load all images for a given line available in <a href="https://neuronbridge.janelia.org/">NeuronBridge</a>.</li>
+                      <li><span style="color: #88CDF5">load line LH989 2711777429851996171</span> : Load a specific image for a given line available in <a href="https://neuronbridge.janelia.org/">NeuronBridge</a>.</li>
+                      <li><span style="color: #88CDF5">show $MBON$</span> : Search for any neuron whose name contains text "MBON".</li>
+                      <li><span style="color: #88CDF5">add /r(.*)DA1_(.*)_R_1/r</span> : Add to the current workspace any neuron whose name matches the regular expression.</li>
+                      <li><span style="color: #88CDF5">show $5813014882$</span> : Show a single neuron corresponding to the Hemibrain BodyID 5813014882.</li>
+                      <li><span style="color: #88CDF5">show /:referenceId:[5813014882, 912147912, 880875861]</span> : Show all neurons with the listed Hemibrain BodyId.</li>
+                      <li><span style="color: #88CDF5">show neurons in right MB</span> : Show all neurons that have arborizations in MB.</li>
+                      <li><span style="color: #88CDF5">add postsynaptic $PEG$ neurons with at least 10 synapses</span> : Add all PEG neurons that are postsynaptic to the neurons in the current workspace and that have a connection with more than 10 synapses.</li>
+                      <li><span style="color: #88CDF5">show neurons that have dendrites in EB and axons in PB</span> : Show neurons that have input site from EB and has output sites in PB</li>
                     </ul>
                     <blockquote><p> Note: <i> show </i> neurons will reset workspace (clear existing neurons, reset viewing angle). While <i>add</i> will preserve the current workspace. </p></blockquote>
   
@@ -622,6 +651,12 @@
                 </band>
               </div>
         </div>
+
+      <div id="pdf-panel" class="overlay">
+          <object data="data/genehandout.pdf" type="application/pdf" title="Handout" width="100%" height="100%">
+            <a href="data/genehandout.pdf">Handout</a> 
+        </object>
+      </div>
 
         <div id="arch-wrapper"></div>
         <div id="msg-wrapper"><p id="msg-diagram"></p></div>
@@ -670,9 +705,9 @@
         </div>
         <div id="neuronlp-switch" class="overlay">
           <div class="neuronlp-switch-wrapper">
-            <a class="info-try btn btn-xs" onclick="NeuroNLPUI.closeAllOverlay()">Stay at <span style="font-family:'Rajdhani',sans-serif; font-size: 15px; color: #999;">NeuroNLP.Hemibrain Gene</span></a>
+            <a class="info-try btn btn-xs" onclick="NeuroNLPUI.closeAllOverlay()">Stay at <span style="font-family:'Rajdhani',sans-serif; font-size: 15px; color: #999;">NeuroNLP.Hemibrain Gene Match</span></a>
             <h5>Or</h5>
-            <a class="info-try btn btn-xs" href="https://gene.neuronlp.fruitflybrain.org/">Switch to <span style="font-family:'Rajdhani',sans-serif; font-size: 15px; color: #999;">NeuroNLP.FlyCircuit Gene</span></a>
+            <a class="info-try btn btn-xs" href="https://gene.neuronlp.fruitflybrain.org/">Switch to <span style="font-family:'Rajdhani',sans-serif; font-size: 15px; color: #999;">NeuroNLP.FlyCircuit Gene Match</span></a>
           </div>
         </div>
 

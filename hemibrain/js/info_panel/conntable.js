@@ -190,8 +190,11 @@ moduleExporter("ConnTable",
       let a_el = document.createElement('a');
       a_el.innerHTML = name;
       // a_el.id = d['publishedName'];
-      var _referenceid = d['id']+':_:'+d['imageURL'];
+      let _referenceid = d['id']+':_:'+d['imageURL'];
+      console.log(_referenceid);
       $(a_el).click(function() {
+        console.log('Hello');
+        console.log(_referenceid);
         lineSummary(_referenceid);
       })
       if ( d['inferred'] == 1 ){

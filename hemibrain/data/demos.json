@@ -5,7 +5,10 @@
                  ["search", {"query": "show $ExR1$"}],
                  ["notify", {"message": "Now let us click on it."}],
                  ["click", {"label": "ExR1(ring)_R_2"}],
-                 ["notify", {"message": "We can now see the associated lines on the left panel."}]],
+                 ["notify", {"message": "We can now see the associated lines on the left panel."}],
+                 ["notify", {"message": "Hover over the '?' symbol to see a visualization of the line."}],
+                 ["notify", {"message": "You can also click on the names in yellow to see an information page about them."}],
+                 ["notify", {"message": "Try it out!"}]],
       "description": "Retrieve a match for a single neuron.",
       "category": "Gene"
     },
@@ -18,6 +21,18 @@
                  ["notify", {"message": "This search can take a while! You can use it on any group of neurons, but the query might take a long time for neuron groups larger than 50."}]],
       "description": "Retrieve a match for a group of neurons.",
       "category": "Gene"
+    },
+    "3": {
+      "keyword": "Retrieve a line from a paper.",
+      "script": [["notify", {"message": "Reading the paper with DOI 10.1016/j.neuron.2018.08.037, we find that the split-GAL4 line LH989 targets the PD2a1/PD2b1 neurons."}],
+                 ["notify", {"message": "We can query for 'load line LH989' to bring up all images for this line."}],
+                 ["search", {"query": "load line LH989"}],
+                 ["notify", {"message": "We can also use a specific image, for example with 'load line LH989 2711777429851996171'"}],
+                 ["search", {"query": "load line LH989 2711777429851996171"}],
+                 ["notify", {"message": "You can now get the matches for some of these neurons by clicking on the green + button!"}]],
+      "description": "Retrieve PD2a1/b1 neurons from DOI: 10.1016/j.neuron.2018.08.037.",
+      "category": "Tags"
     }
+    
 
   }
